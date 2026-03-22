@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; }
+    .wrap { max-width:720px; margin:40px auto; padding:24px; }
+    .card { background:#111827; border:1px solid #334155; border-radius:16px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+    h1 { margin-top:0; font-size:28px; }
+    p { color:#94a3b8; }
+    label { display:block; margin:16px 0 8px; font-weight:700; }
+    input[type=file], select, button { width:100%; box-sizing:border-box; border-radius:12px; padding:12px; border:1px solid #475569; background:#0b1220; color:#e2e8f0; }
+    button { margin-top:20px; background:#2563eb; border:none; font-weight:700; cursor:pointer; }
+    button:hover { background:#1d4ed8; }
+    .flash { margin:0 0 16px; padding:12px 14px; border-radius:12px; background:#1e293b; border:1px solid #475569; }
+    .meta { margin-top:18px; font-size:14px; color:#94a3b8; }
+    .small { font-size:13px; color:#94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Печать через CUPS</h1>
+      <p>Загрузи PDF или DOCX, выбери принтер и отправь файл на Orange Pi.</p>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="flash">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" action="/print" enctype="multipart/form-data">
+        <label for="printer">Принтер</label>
+        <select id="printer" name="printer" required>
+          {% if not printers %}
+            <option value="">Принтеры не найдены</option>
+          {% endif %}
+          {% for printer in printers %}
+            <option value="{{ printer }}" {% if printer == default_printer %}selected{% endif %}>{{ printer }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="file">Файл</label>
+        <input id="file" name="file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+
+        <button type="submit">Распечатать</button>
+      </form>
+
+      <div class="meta">CUPS сервер: {{ cups_server }}</div>
+      <div class="small">Если DOCX печатается криво, лучше сначала сохранить его как PDF.</div>
+    </div>
+  </div>
+</body>
+</html>

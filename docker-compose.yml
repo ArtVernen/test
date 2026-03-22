@@ -1,0 +1,13 @@
+services:
+  print-service:
+    build: .
+    container_name: print-service
+    environment:
+      CUPS_SERVER: ${CUPS_SERVER:-192.168.0.110:631}
+      SECRET_KEY: ${SECRET_KEY:-change-me}
+      DEFAULT_PRINTER: ${DEFAULT_PRINTER:-}
+      APP_TITLE: ${APP_TITLE:-Print Service}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-50}
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
